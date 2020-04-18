@@ -57,7 +57,7 @@ Below are the rubric points that are addressed/implemented in this project.
 ### Loops, Functions, I/O
 * The project demonstrates an understanding of C++ functions and control structures.
 * The project accepts user input and processes the input. (main menu option and paddle movement control)
-###Object Oriented Programming
+### Object Oriented Programming
 * The project uses Object Oriented Programming techniques.
 * Classes use appropriate access specifiers for class members.
 * Class constructors utilize member initialization lists.
