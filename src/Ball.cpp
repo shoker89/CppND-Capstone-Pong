@@ -1,5 +1,6 @@
 #include "Ball.h"
 #include "SdlWindow.h"
+#include <iostream>
 
 const int BALL_SIZE = 10;
 const int MAX_X = WINDOW_WIDTH - BALL_SIZE;
@@ -55,6 +56,7 @@ void Ball::run()
 		resetPosition();
 		setXVel(-this->xVel);
 		resetVelocities();
+		left = true;
 		this->player2Score->increment();
 
 		//play score sound
@@ -75,7 +77,7 @@ void Ball::run()
 	if (SDL_HasIntersection(&this->rect, this->paddle1->getRect()))
 	{
 		handlePaddleCollision(paddle1Rect, true);
-
+		left = true;
 		//play paddle hit sound
 		Mix_PlayChannel(-1, paddleHitSound, 0);
 	}
@@ -85,6 +87,7 @@ void Ball::run()
 		if (SDL_HasIntersection(&this->rect, paddle2Rect))
 		{
 			handlePaddleCollision(paddle2Rect, false);
+			left = false;			
 			//play paddle hit sound
 			Mix_PlayChannel(-1, paddleHitSound, 0);
 		}

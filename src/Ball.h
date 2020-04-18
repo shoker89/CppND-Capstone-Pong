@@ -9,9 +9,12 @@
 class Ball
 {
 	public:
+		Ball(){};
 		Ball(Score* player1Score, Score* player2Score, Paddle* paddle1, Paddle* paddle2);
 		void run();
 		void draw(SDL_Renderer*);
+		SDL_Rect *getBall (){return &rect;}
+		bool *goingLeft(){return &left;}
 		
 
 	private:
@@ -22,6 +25,7 @@ class Ball
 		Score* player2Score;
 		Paddle* paddle1;
 		Paddle* paddle2;
+		bool left = false;
 
 		void resetPosition();
 		void resetVelocities();

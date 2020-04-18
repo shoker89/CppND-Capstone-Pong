@@ -1,8 +1,10 @@
 #define SDL_MAIN_HANDLED
 #include <stdio.h>
+#include <iostream>
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
+#include <thread>
 
 #include "SdlSession.h"
 #include "SdlWindow.h"
@@ -10,13 +12,17 @@
 #include "InputManager.h"
 #include "Ball.h"
 #include "Score.h"
+#include "AI_enemy.h"
+#include "menu.h"
 
 const int TARGET_FPS = 60;
 const char* FONT_PATH = "../font/Roboto.ttf";
+int enemy = 1;
 
 void mainLoop(SDL_Renderer* renderer, TTF_Font* font)
 {
 	InputManager inputManager;
+	
 	const int paddleStartY = WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2;
 	Paddle paddle1(20, paddleStartY);
 	Paddle paddle2(WINDOW_WIDTH - (20 + PADDLE_WIDTH), paddleStartY);
@@ -24,6 +30,12 @@ void mainLoop(SDL_Renderer* renderer, TTF_Font* font)
 	Score player1Score(WINDOW_WIDTH/2 - 100, 20);
 	Score player2Score(WINDOW_WIDTH/2 + 100, 20);
 	Ball ball(&player1Score, &player2Score, &paddle1, &paddle2);
+	SDL_Rect * rectBall = ball.getBall();
+	SDL_Rect * rectPaddle = paddle2.getRect();
+	bool * left = ball.goingLeft();
+
+	AI_enemy ai_enemy(rectBall, rectPaddle, left);
+	
 
 	SDL_Rect board;
 	board.x =18;
@@ -36,6 +48,7 @@ void mainLoop(SDL_Renderer* renderer, TTF_Font* font)
 
 	bool running = true;
 	SDL_Event e;
+
 	while (running)
 	{
 		while (SDL_PollEvent(&e) != 0)
@@ -59,10 +72,22 @@ void mainLoop(SDL_Renderer* renderer, TTF_Font* font)
 		if (inputManager.isButtonDown(GameInputButton::PLAYER1_UP))
 				paddle1.inputMoveUp();
 
-		if (inputManager.isButtonDown(GameInputButton::PLAYER2_DOWN))
+		if (enemy ==1)
+		{
+			if (ai_enemy.logic(GameInputAI::PLAYER2_DOWN))
 				paddle2.inputMoveDown();
-		if (inputManager.isButtonDown(GameInputButton::PLAYER2_UP))
+			if (ai_enemy.logic(GameInputAI::PLAYER2_UP))
 				paddle2.inputMoveUp();
+			
+		}else
+		{
+			if (inputManager.isButtonDown(GameInputButton::PLAYER2_DOWN))
+				paddle2.inputMoveDown();
+			if (inputManager.isButtonDown(GameInputButton::PLAYER2_UP))
+				paddle2.inputMoveUp();
+		}
+		
+
 
 		ball.run();
 		
@@ -122,6 +147,42 @@ int main(int argc, char** argv)
 		printf("Failed to open the font: '%s'\n", FONT_PATH);
 		return 0;
 	}
+
+	bool menuChoice = false;
+	//Menu menu;
+	std::shared_ptr<Menu> menu (new Menu);
+	SDL_Event e;
+	//menu.draw(window.getRenderer());
+	SDL_Renderer *renderWindow = window.getRenderer();
+	std::thread t1 = std::thread (&Menu::draw,menu,renderWindow);
+	while (!menuChoice)
+	{
+		while( SDL_PollEvent( &e ) )
+		{
+        switch( e.type )
+		{
+            /* Look for a keypress */
+            case SDL_KEYDOWN:
+                /* Check the SDLKey values and move change the coords */
+                switch( e.key.keysym.sym )
+				{
+                    case SDLK_F1:
+                        enemy = 0;
+						menuChoice = true;
+                        break;
+                    case SDLK_F2:
+                        enemy = 1;
+						menuChoice = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+		
+		
+	}
+
 	mainLoop(window.getRenderer(), font);
 	TTF_CloseFont(font);
 	return 0;

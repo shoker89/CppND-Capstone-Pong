@@ -8,6 +8,7 @@ const int PADDLE_WIDTH = 10;
 class Paddle
 {
 	public:
+		Paddle(){};
 		Paddle(int x, int y);
 
 		SDL_Rect* getRect();
