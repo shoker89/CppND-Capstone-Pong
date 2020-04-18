@@ -39,10 +39,13 @@ It's been used SDL2 for the rendering of the object on the screen in addition to
 
 Choose between play against a second player (pressing F1) or against the computer (pressing F2)
 
+
 ## Controls
 
 Player 1 -> Move up: W     Move down: S
 Player 2 -> Move up: ↑     Move down: ↓
+
+
 
 ## Rubric Points implemented
 Below are the rubric points that are addressed/implemented in this project.
@@ -64,5 +67,5 @@ Below are the rubric points that are addressed/implemented in this project.
 * The project makes use of references in function declarations.
 * The project uses destructors appropriately. (see renderer destructors)
 * The project uses smart pointers instead of raw pointers. (see main.cpp for the main menu render thread)
-###Concurrency
+### Concurrency
 * The project uses multithreading. (main menu started in a different thread)
